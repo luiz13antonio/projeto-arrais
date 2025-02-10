@@ -1,18 +1,19 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { Input } from "antd";
-import { useRef } from "react";
-import { useForm } from "react-hook-form";
+import { useContext, useRef } from "react";
+import { LoginContext } from "../contexts/LoginContext";
 
 const Login = () => {
 
     const usuarioValue = useRef();
     const senhaValue = useRef();
+    const { setUsuario } = useContext(LoginContext);
 
   async function login() {
 
-        const usuario = usuarioValue.current.Input.value;
-        const senha = senhaValue.current.Input.value;
+        const usuario = usuarioValue.current.input.value;
+        const senha = senhaValue.current.input.value;
         if (usuario == '') {
             alert("Digite o seu usuario")
             return;
@@ -21,13 +22,17 @@ const Login = () => {
             alert("Digite a senha")
             return;
         }
-        const request = await fetch("http://projeto-arrais-api.onrender.com/usuario/login",{
+        const request = await fetch("http://projeto-arrais-api.onrender.com/usuario/login", {
             method: "POST",
             Headers: {"content-type":"aplication/json"},
             body: JSON.stringify({ usuario, senha})
-        })
+        });
         const response = await request.json();
 
+        if(response){
+            setUsuario(response);
+            sessionStorage.setItem("usuario", JSON.stringify(response))
+        }
 
     }
     return (
